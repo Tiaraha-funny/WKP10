@@ -1,25 +1,27 @@
-import faker from 'faker';
+import faker from "faker";
 
-const tbody = document.querySelector('tbody');
+const tbody = document.querySelector("tbody");
 
 let persons = Array.from({ length: 10 }, () => {
-	return {
-		id: faker.random.uuid(),
-		lastName: faker.name.lastName(),
-		firstName: faker.name.firstName(),
-		jobTitle: faker.name.jobTitle(),
-		jobArea: faker.name.jobArea(),
-		phone: faker.phone.phoneNumber(),
-		picture: faker.image.avatar(100, 100),
-	};
+  return {
+    id: faker.random.uuid(),
+    lastName: faker.name.lastName(),
+    firstName: faker.name.firstName(),
+    jobTitle: faker.name.jobTitle(),
+    jobArea: faker.name.jobArea(),
+    phone: faker.phone.phoneNumber(),
+    picture: faker.image.avatar(100, 100),
+  };
 });
 
-const displayList = data => {
-	tbody.innerHTML = data
-		.map(
-			(person, index) => `
-    <tr data-id="${person.id}" class="${index % 2 ? 'even' : ''}">
-        <td><img src="${person.picture}" alt="${person.firstName + ' ' + person.lastName}"/></td>
+const displayList = (data) => {
+  tbody.innerHTML = data
+    .map(
+      (person, index) => `
+    <tr data-id="${person.id}" class="${index % 2 ? "even" : ""}">
+        <td><img src="${person.picture}" alt="${
+        person.firstName + " " + person.lastName
+      }"/></td>
         <td class="lastName">${person.lastName}</td>
         <td class="firstName">${person.firstName}</td>
         <td class="jobTitle">${person.jobTitle}</td>
@@ -35,50 +37,46 @@ const displayList = data => {
             </td>
     </tr>
 `
-		)
-		.join('');
+    )
+    .join("");
 };
 
-
-const editPartner = e => {
-
-};
+const editPartner = (e) => {};
 
 function destroyPopup(popup) {
-  popup.classList.remove('open');
+  popup.classList.remove("open");
   popup.remove();
-};
+}
 
-const handleClick = e => {
-
-  if(e.target.closest('button.edit')) {
-    const parent = e.target.closest('tr');
+const handleClick = (e) => {
+  if (e.target.closest("button.edit")) {
+    const parent = e.target.closest("tr");
     const id = parent.dataset.id;
     editPartnerPopup(id);
   }
 
-  if(e.target.matches('button.delete')) {
-    console.log('delete button is clicked');
-    const parent = e.target.closest('tr');
+  if (e.target.closest("button.delete")) {
+    console.log("delete button is clicked");
+    const parent = e.target.closest("tr");
     const id = parent.dataset.id;
     deleteDeletePopup(id);
   }
 
-}
+};
 
 //To handle the click button and show all of these inside the input
 
 const editPartnerPopup = (id) => {
+  console.log("Edit is clicked");
+  let personToEdit = persons.find((person) => person.id === id);
+  console.log(personToEdit);
 
-    console.log('Edit is clicked');
-    let personToEdit = persons.find(person => person.id === id);
-    console.log(personToEdit);
-
-	  return new Promise(function(resolve) {
-    
-      const popup = document.createElement('form');
-      popup.classList.add('popup');
-      popup.insertAdjacentHTML('afterbegin', `
+  return new Promise(function (resolve) {
+    const popup = document.createElement("form");
+    popup.classList.add("popup");
+    popup.insertAdjacentHTML(
+      "afterbegin",
+      `
         <div class="form">
           <h1>Is this your partner?</h1>
           <fieldset>
@@ -105,51 +103,89 @@ const editPartnerPopup = (id) => {
             <button type="submit">
               Save
             </button>
-            <button type="cancel">
+            <button type="button" name="cancel">
               cancel
             </button>
           </div>
         </div>
-      `)
-    
-    popup.addEventListener('submit', e => {
-      e.preventDefault();
+      `
+    );
 
-      resolve();
+    popup.addEventListener(
+      "submit",
+      (e) => {
+        e.preventDefault();
 
-      personToEdit.lastName = popup.lastName.value;
-      personToEdit.firstName = popup.firstName.value;
-      personToEdit.jobTitle = popup.jobTitle.value;
-      personToEdit.jobArea = popup.jobArea.value;
-      personToEdit.phone = popup.number.value;
+        resolve();
 
-      displayList(persons);
-      
-      destroyPopup(popup);
+        personToEdit.lastName = popup.lastName.value;
+        personToEdit.firstName = popup.firstName.value;
+        personToEdit.jobTitle = popup.jobTitle.value;
+        personToEdit.jobArea = popup.jobArea.value;
+        personToEdit.phone = popup.number.value;
 
-    }, { once: true });
+        displayList(persons);
 
-		resolve(document.body.appendChild(popup));
-		popup.classList.add('open');
-  })
-  };
+        destroyPopup(popup);
+      },
+      { once: true }
+    );
 
+    if (popup.cancel) {
+      console.log("I am canceled by you");
+      popup.cancel.addEventListener(
+        "click",
+        function () {
+          resolve(null);
+          destroyPopup(popup);
+        },
+        { once: true }
+      );
+    }
+
+    resolve(document.body.appendChild(popup));
+    popup.classList.add("open");
+  });
+};
 
 const deleteDeletePopup = (id) => {
   // create confirmation popup here
-  console.log('delete btn is clicked');
+  console.log("delete btn is clicked");
 
-  const popup = document.createElement('form');
-    popup.classList.add('popup');
-    popup.insertAdjacentHTML('afterbegin', `
-    <h3>Do you really want to delete it?</h3>
-    <button>YES</button>
-    <button>CANCEL</button>
-    `)
+  let personToDelete = persons.find((person) => person.id === id);
+  console.log(personToDelete);
 
-  }
+  return new Promise(function (resolve) {
+    const popup = document.createElement("form");
+    popup.classList.add("popup");
+    popup.insertAdjacentHTML(
+      "afterbegin",
+      `<article>
+      <h3>Do you really want to delete it?</h3>
+      <button class="yes">YES</button>
+      <button class="cancel" type="button" name="cancel">CANCEL</button>
+    </article>
+      `
+    );
+    
+    if (popup.cancel) {
+      console.log("The cancel button is clicked");
+      popup.cancel.addEventListener(
+        "click",
+        function () {
+          resolve(null);
+          destroyPopup(popup);
+        },
+        { once: true }
+      );
+    }
 
-window.addEventListener('click', handleClick);
+    resolve(document.body.appendChild(popup));
+    popup.classList.add("open");
+  });
+};
+
+window.addEventListener("click", handleClick);
 displayList(persons);
 
 // const deletePartner = (id) => {

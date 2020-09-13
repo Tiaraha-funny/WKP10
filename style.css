@@ -144,9 +144,22 @@ fieldset input {
 	justify-content: space-between;
 }
 
-.buttons > button {
-	background-color: grey;
-	padding: 1rem;
+article {
+	width: 300px;
+	height: 300px;
+	background-color: #fffffe;
+	padding: 2rem;
+}
+
+article button:nth-of-type(1){
+	margin-inline-end: 8rem;
+}
+
+.buttons button,
+article button {
+	padding: 16px;
+	background-color: pink;
+	border-radius: 5px;
 	border: none;
-	border-radius: 1rem;
+	margin-block-start: 5rem;
 }
