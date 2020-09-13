@@ -61,7 +61,6 @@ const handleClick = (e) => {
     const id = parent.dataset.id;
     deleteDeletePopup(id);
   }
-
 };
 
 //To handle the click button and show all of these inside the input
@@ -167,7 +166,7 @@ const deleteDeletePopup = (id) => {
     </article>
       `
     );
-    
+
     if (popup.cancel) {
       console.log("The cancel button is clicked");
       popup.cancel.addEventListener(
@@ -187,11 +186,3 @@ const deleteDeletePopup = (id) => {
 
 window.addEventListener("click", handleClick);
 displayList(persons);
-
-// const deletePartner = (id) => {
-//   // code delete function gere
-//   console.log('delete the items', id);
-//   items = items.filter(item => item.id !== id);
-//   const id = Number(e.target.value);
-//       deleteDeletePopup(id);
-// };
